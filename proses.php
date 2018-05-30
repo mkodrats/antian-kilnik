@@ -3,8 +3,8 @@
     function Connection()
     {
         static $conn;
-        $conn = mysqli_connect('localhost','root','root','simrsst');
-        // $conn = mysqli_connect('den1.mysql2.gear.host','simrsst','Ca80ec!~R32L','simrsst');
+        // $conn = mysqli_connect('localhost','root','root','simrsst');
+        $conn = mysqli_connect('den1.mysql2.gear.host','simrsst','Ca80ec!~R32L','simrsst');
         return $conn;
     }
 
@@ -13,7 +13,7 @@
         $conn = Connection();
         
         $sql = "SELECT * FROM t_user WHERE NomorRM = '$norm' AND password = '$password'";
-        // echo $sql;
+        echo $sql;
 
         $res = mysqli_query($conn, $sql);
         $data = [];
