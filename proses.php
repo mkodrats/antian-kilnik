@@ -13,12 +13,19 @@
         $conn = Connection();
         
         $sql = "SELECT * FROM t_user WHERE NomorRM = '$norm' AND password = '$password'";
+        // echo $sql;
+
         $res = mysqli_query($conn, $sql);
 
-        foreach ($res as $key => $value) {
-            $norm =  $value[NomorRM];
+        if (mysqli_fetch_row($res) > 0 ) {
+            foreach ($res as $key) {
+                $key =  $value[NomorRM];
+            }
+            echo json_encode($norm);
+        }else {
+            echo 'Data Tidak Ada';
         }
-        echo json_encode($norm);
+        
 
     }
 
