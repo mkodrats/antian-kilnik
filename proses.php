@@ -61,7 +61,38 @@
         }
     }
 
-    // function Daftar(Type $var = null)
+    function LihatJadwal()
+    {
+        $conn = Connection();
+        $sql = "SELECT * FROM t_ruang";
+        $res = mysqli_query($conn, $sql);
+        $jsonArray = array();
+        while ($row = mysqli_fetch_assoc($res)) {
+           $data = array(
+               'kode_ruang' => $row['KodeRuang'],
+               'ruang'      => $row['Ruang'],
+           );
+           $jsonArray[]=$data;
+        }
+        
+        echo json_encode($jsonArray);
+    }
+
+    // function DetailJadwal($kode_ruang)
     // {
-    //     # code...
+    //     $conn = Connection();
+    //     $sql  = "SELECT * 
+    //              FROM t_jadwal_dokter, t_ruang, t_dokter
+    //              WHERE t_jadwal_dokter.KodeRuang = '$kode_ruang' 
+    //                    AND t_ruang.KodeRuang     = '$kode_ruang' 
+    //                    AND t_jadwal_dokter.KodeTKesehatan = t_dokter.KodeDokter";
+    //     $res = mysqli_query($conn, $sql);
+    //     $jsonArray= array();
+    //     while ($row = mysqli_fetch_assoc($res)) {
+    //         $data = array(
+    //             'nama_dokter' => $row['Nama']
+    //         );
+    //         $jsonArray[]=$data;
+    //     }
+    //     echo json_encode
     // }

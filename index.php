@@ -16,3 +16,7 @@ include 'proses.php';
 
         Daftar($norm, $tgl_lahir, $password);
     }
+
+    if (isset($_GET['jadwal'])) {
+       LihatJadwal();
+    }
