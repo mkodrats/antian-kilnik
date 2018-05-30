@@ -13,7 +13,6 @@
         $conn = Connection();
         
         $sql = "SELECT * FROM t_user WHERE NomorRM = '$norm' AND password = '$password'";
-        echo $sql;
 
         $res = mysqli_query($conn, $sql);
         $data = [];
