@@ -3,8 +3,8 @@
     function Connection()
     {
         static $conn;
-        // $conn = mysqli_connect('localhost','root','root','simrsst');
-        $conn = mysqli_connect('den1.mysql2.gear.host','simrsst','Ca80ec!~R32L','simrsst');
+        $conn = mysqli_connect('localhost','root','root','simrsst');
+        // $conn = mysqli_connect('den1.mysql2.gear.host','simrsst','Ca80ec!~R32L','simrsst');
         return $conn;
     }
 
@@ -39,18 +39,18 @@
         $res    = mysqli_query($conn, $sql);
         $query  = "SELECT NomorRM FROM t_user WHERE NomorRM = '$norm'";
         $result = mysqli_query($conn, $query);
-        $tes = mysqli_fetch_row($res);
-        // var_dump($tes);
+        $tes    = mysqli_fetch_row($result);
+        $tes2   = mysqli_fetch_row($res);
 
         $alert = [];
-        if (mysqli_fetch_row($res) > 0 &&  mysqli_fetch_row($result) == 0) {
+        if ($tes == 0 &&  $tes2 > 0) {
             $sql  = "INSERT INTO t_user(NomorRM, password ) VALUES ('$norm', '$password') ";
             $res = mysqli_query($conn, $sql);
             if ($res == true) {
                $alert = array('alert' => 'Daftar Berhasil Silahkan Login');
                echo json_encode($alert);
             }
-        }else if (mysqli_fetch_row($result) > 0) {
+        }else if ($tes2 > 0) {
            $alert = array('alert' => 'Anda Sudah Terdaftar Silahkan Login');
            echo json_encode($alert);
         }else{
