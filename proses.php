@@ -16,12 +16,15 @@
         // echo $sql;
 
         $res = mysqli_query($conn, $sql);
+        $data = [];
 
         if (mysqli_fetch_row($res) > 0 ) {
             foreach ($res as $key) {
-                $key =  $value[NomorRM];
+                $data = array(
+                    'norm' => $key['NomorRM'],
+            ); 
             }
-            echo json_encode($norm);
+            echo json_encode($data);
         }else {
             echo 'Data Tidak Ada';
         }
