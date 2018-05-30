@@ -26,7 +26,10 @@
             }
             echo json_encode($data);
         }else {
-            echo 'Data Tidak Ada';
+            $alert = array(
+                'alert' => 'Data Tidak Ada'
+            );
+            echo json_encode($alert);
         }
         
 
@@ -78,21 +81,22 @@
         echo json_encode($jsonArray);
     }
 
-    // function DetailJadwal($kode_ruang)
-    // {
-    //     $conn = Connection();
-    //     $sql  = "SELECT * 
-    //              FROM t_jadwal_dokter, t_ruang, t_dokter
-    //              WHERE t_jadwal_dokter.KodeRuang = '$kode_ruang' 
-    //                    AND t_ruang.KodeRuang     = '$kode_ruang' 
-    //                    AND t_jadwal_dokter.KodeTKesehatan = t_dokter.KodeDokter";
-    //     $res = mysqli_query($conn, $sql);
-    //     $jsonArray= array();
-    //     while ($row = mysqli_fetch_assoc($res)) {
-    //         $data = array(
-    //             'nama_dokter' => $row['Nama']
-    //         );
-    //         $jsonArray[]=$data;
-    //     }
-    //     echo json_encode
-    // }
+    function DetailJadwal($kode_ruang)
+    {
+        $conn = Connection();
+        $sql  = "SELECT * 
+                 FROM t_jadwal_dokter, t_ruang, t_dokter
+                 WHERE t_jadwal_dokter.KodeRuang = '$kode_ruang' 
+                       AND t_ruang.KodeRuang     = '$kode_ruang' 
+                       AND t_jadwal_dokter.KodeTKesehatan = t_dokter.KodeDokter";
+        $res = mysqli_query($conn, $sql);
+        $jsonArray= array();
+        while ($row = mysqli_fetch_assoc($res)) {
+            $data = array(
+                'nama_dokter' => $row['Nama'],
+                'hari'        => $row['hari']
+            );
+            $jsonArray[]=$data;
+        }
+        echo json_encode($jsonArray);
+    }

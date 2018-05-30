@@ -18,5 +18,10 @@ include 'proses.php';
     }
 
     if (isset($_GET['jadwal'])) {
-       LihatJadwal();
+        LihatJadwal();
+    }
+
+    if (isset($_GET['detailjadwal'])) {
+        $kode_ruang = $_GET['kode_ruang'];
+        DetailJadwal($kode_ruang);
     }
