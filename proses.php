@@ -99,3 +99,114 @@
         }
         echo json_encode($jsonArray);
     }
+
+    function DaftarPeriksa($norm)
+    {
+        $conn = Connection();  
+        $sql = "SELECT * FROM t_pasien WHERE NomorRM = '$norm'";
+        $res = mysqli_query($conn, $sql);
+        $jsonArray = array();
+            while($row = mysqli_fetch_assoc($res)){
+                $data[] = array(
+                    'pasien' =>
+                    $a = array(
+                        'norm'      => $row['NomorRM'],
+                        'nama'      => $row['NamaPasien'],
+                        'tgl_lahir' => $row['TglLahir']
+                    ),
+                );
+        }
+        
+        $sql = "SELECT * FROM t_carabayar";
+        $res = mysqli_query($conn, $sql);
+        $dataa = array('carabayar');
+        foreach ($res as $key => $value) {
+            $dataa[] = array(
+            //     'Kode' =>
+                    $datas= array(
+                        'Kode'          => $value['KodeCaraPembayaran'],
+                        'Keterangan'    => $value['Keterangan']
+                    ),
+        );
+        }
+        echo json_encode(array_merge($data, $dataa));
+    }
+
+    function SimpanDaftar($norm,$kdcarapem,$tgl_daftar,$tgl_periksa,$nokartu,$kunjungan,$kode_ruang,$kode_dokter,$keluhan)
+    {
+        $conn   = Connection();
+        $sql    = "INSERT INTO `t_pendaftaran`(`NomorRM`, `KodeCaraPembayaran`, `TglDaftar`, `TglPeriksa`, `NoKartu`, `Kunjungan`, `KodeRuang`, `KodeDokter`, `Keluhan`) 
+                   VALUES ('$norm','$kdcarapem','$tgl_daftar','$tgl_periksa','$nokartu','$kunjungan','$kode_ruang','$kode_dokter','$keluhan')";
+        $res    = mysqli_query($conn, $sql);
+        $query  = "SELECT NamaPasien FROM t_pasien WHERE NomorRM = $norm";
+        $result = mysqli_query($conn, $query);
+        $data   = mysqli_fetch_assoc($result);
+        $nama   =  $data['NamaPasien'];
+
+        if ($res ==  true) {
+           echo json_encode(array('alert' => "Pasien $nama Berhasil Disimpan"));
+        }else {
+            echo json_encode(array('alert' => 'Form Belum Lengkap'));
+        }
+    }
+
+    function DaftarPoliklinik()
+    {
+        $conn = Connection();
+        $sql = "SELECT * FROM t_ruang";
+        $res = mysqli_query($conn, $sql);
+        $jsonArray = array();
+        foreach ($res as $key => $value) {
+            $data = array(
+                'KodeRuang' => $value['KodeRuang'],
+                'Ruang'     => $value['Ruang']
+            ); 
+            $jsonArray[]=$data;
+        }
+        echo json_encode($jsonArray);
+    }
+
+    function Dokter($koderuang)
+    {
+        $conn = Connection();
+        $sql  = "SELECT * FROM t_jadwal_dokter, t_dokter WHERE t_jadwal_dokter.KodeRuang = '$koderuang' AND t_dokter.KodeDokter = t_jadwal_dokter.KodeTKesehatan ";
+        $res  = mysqli_query($conn, $sql);
+        $jsonArray = array();
+        foreach ($res as $key => $value) {
+            $data = array(
+                'KodeRuang'  => $value['KodeRuang'],
+                'KodeDokter' => $value['KodeDokter'],
+                'Nama'       => $value['Nama']
+            );
+            $jsonArray[]=$data;
+        }
+        echo json_encode($jsonArray);
+    }
+
+    function resDaftar($norm)
+    {
+        $conn = Connection();
+        $sql  = "SELECT * FROM t_pasien, t_pendaftaran WHERE t_pasien.NomorRm = $norm AND t_pendaftaran.NomorRM = $norm ORDER BY TglPeriksa DESC LIMIT 1";
+        $res  = mysqli_query($conn, $sql);
+        $json= array();
+        foreach ($res as $key => $value) {
+            $data = array(
+                'id_pendaftaran'        => $value['id_pendaftaran'],
+                'NomorRM'               => $value['NomorRM'],
+                'KodeCaraPembayaran'    => $value['KodeCaraPembayaran'],
+                'TglDaftar'             => $value['TglDaftar'],
+                'TglPeriksa'            => $value['TglPeriksa'],
+                'JamPeriksa'            => $value['JamPeriksa'],
+                'NoKartu'               => $value['NoKartu'],
+                'Kunjungan'             => $value['Kunjungan'],
+                'KodeRuang'             => $value['KodeRuang'],
+                'KodeDokter'            => $value['KodeDokter'],
+                'NamaPasien'            => $value['NamaPasien']
+            );
+            $json[]=$data;
+            
+        }
+        echo json_encode($json);
+    }
+
+    
