@@ -108,46 +108,52 @@
         $jsonArray = array();
             while($row = mysqli_fetch_assoc($res)){
                 $data[] = array(
-                    'pasien' =>
-                    $a = array(
                         'norm'      => $row['NomorRM'],
                         'nama'      => $row['NamaPasien'],
                         'tgl_lahir' => $row['TglLahir']
-                    ),
                 );
         }
         
+        echo json_encode($data);
+    }
+
+    function CaraBayar()
+    {
+        $conn = Connection();
         $sql = "SELECT * FROM t_carabayar";
         $res = mysqli_query($conn, $sql);
-        $dataa = array('carabayar');
         foreach ($res as $key => $value) {
-            $dataa[] = array(
-            //     'Kode' =>
+            $data[] = array(
                     $datas= array(
                         'Kode'          => $value['KodeCaraPembayaran'],
                         'Keterangan'    => $value['Keterangan']
                     ),
         );
+        echo json_encode($data);
         }
-        echo json_encode(array_merge($data, $dataa));
     }
 
     function SimpanDaftar($norm,$kdcarapem,$tgl_daftar,$tgl_periksa,$nokartu,$kunjungan,$kode_ruang,$kode_dokter,$keluhan)
     {
         $conn   = Connection();
-        $sql    = "INSERT INTO `t_pendaftaran`(`NomorRM`, `KodeCaraPembayaran`, `TglDaftar`, `TglPeriksa`, `NoKartu`, `Kunjungan`, `KodeRuang`, `KodeDokter`, `Keluhan`) 
-                   VALUES ('$norm','$kdcarapem','$tgl_daftar','$tgl_periksa','$nokartu','$kunjungan','$kode_ruang','$kode_dokter','$keluhan')";
-        $res    = mysqli_query($conn, $sql);
-        $query  = "SELECT NamaPasien FROM t_pasien WHERE NomorRM = $norm";
-        $result = mysqli_query($conn, $query);
-        $data   = mysqli_fetch_assoc($result);
-        $nama   =  $data['NamaPasien'];
+        $ruang  = "SELECT Inisial FROM t_ruang WHERE KodeRuang = $kode_ruang";
+        $ruang  = mysqli_query($conn, $ruang);
+        $ruang  = mysqli_fetch_assoc($ruang);
+        $ruang  = $ruang['Inisial'];
+        $antrian = "SELECT no_antrian FROM t_pendaftaran";
+        // $sql    = "INSERT INTO `t_pendaftaran`(`NomorRM`, `KodeCaraPembayaran`, `TglDaftar`, `TglPeriksa`, `NoKartu`, `Kunjungan`, `KodeRuang`, `KodeDokter`, `Keluhan`) 
+        //            VALUES ('$norm','$kdcarapem','$tgl_daftar','$tgl_periksa','$nokartu','$kunjungan','$kode_ruang','$kode_dokter','$keluhan')";
+        // $res    = mysqli_query($conn, $sql);
+        // $query  = "SELECT NamaPasien FROM t_pasien WHERE NomorRM = $norm";
+        // $result = mysqli_query($conn, $query);
+        // $data   = mysqli_fetch_assoc($result);
+        // $nama   =  $data['NamaPasien'];
 
-        if ($res ==  true) {
-           echo json_encode(array('alert' => "Pasien $nama Berhasil Disimpan"));
-        }else {
-            echo json_encode(array('alert' => 'Form Belum Lengkap'));
-        }
+        // if ($res ==  true) {
+        //    echo json_encode(array('alert' => "Pasien $nama Berhasil Disimpan"));
+        // }else {
+        //     echo json_encode(array('alert' => 'Form Belum Lengkap'));
+        // }
     }
 
     function DaftarPoliklinik()
@@ -186,7 +192,7 @@
     function resDaftar($norm)
     {
         $conn = Connection();
-        $sql  = "SELECT * FROM t_pasien, t_pendaftaran WHERE t_pasien.NomorRm = $norm AND t_pendaftaran.NomorRM = $norm ORDER BY TglPeriksa DESC LIMIT 1";
+        $sql  = "SELECT * FROM t_pasien, t_pendaftaran WHERE t_pasien.NomorRm = $norm AND t_pendaftaran.NomorRM = $norm ORDER BY TglDaftar DESC LIMIT 1";
         $res  = mysqli_query($conn, $sql);
         $json= array();
         foreach ($res as $key => $value) {

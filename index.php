@@ -60,3 +60,7 @@ include 'proses.php';
         $norm = $_GET['norm'];
         resDaftar($norm);
     }
+
+    if (isset($_GET['carabayar'])) {
+        CaraBayar();
+    }
