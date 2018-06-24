@@ -124,10 +124,8 @@
         $res = mysqli_query($conn, $sql);
         foreach ($res as $key => $value) {
             $data[] = array(
-                    $datas= array(
                         'Kode'          => $value['KodeCaraPembayaran'],
                         'Keterangan'    => $value['Keterangan']
-                    ),
         );
         echo json_encode($data);
         }
