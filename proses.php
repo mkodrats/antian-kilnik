@@ -122,13 +122,15 @@
         $conn = Connection();
         $sql = "SELECT * FROM t_carabayar";
         $res = mysqli_query($conn, $sql);
+        $jsonArray = array();
         foreach ($res as $key => $value) {
-            $data[] = array(
+            $data = array(
                         'Kode'          => $value['KodeCaraPembayaran'],
                         'Keterangan'    => $value['Keterangan']
         );
-        echo json_encode($data);
+        $jsonArray[]=$data;
         }
+        echo json_encode($jsonArray);
     }
 
     function SimpanDaftar($norm,$kdcarapem,$tgl_daftar,$tgl_periksa,$nokartu,$kunjungan,$kode_ruang,$kode_dokter,$keluhan)
