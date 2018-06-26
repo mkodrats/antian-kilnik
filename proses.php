@@ -84,10 +84,10 @@
     {
         $conn = Connection();
         $sql  = "SELECT * 
-                 FROM t_jadwal_dokter, t_ruang, t_dokter
-                 WHERE t_jadwal_dokter.KodeRuang = '$kode_ruang' 
-                       AND t_ruang.KodeRuang     = '$kode_ruang' 
-                       AND t_jadwal_dokter.KodeTKesehatan = t_dokter.KodeDokter";
+                FROM t_ruangdokter, t_ruang, t_dokter
+                WHERE t_ruangdokter.KodeRuang = '$kode_ruang' 
+                    AND t_ruang.KodeRuang     = '$kode_ruang' 
+                    AND t_ruangdokter.KodeDokter = t_dokter.KodeDokter";
         $res = mysqli_query($conn, $sql);
         $jsonArray= array();
         while ($row = mysqli_fetch_assoc($res)) {
