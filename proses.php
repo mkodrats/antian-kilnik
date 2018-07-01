@@ -3,8 +3,8 @@
     function Connection()
     {
         static $conn;
-        $conn = mysqli_connect('localhost','root','root','simrsst');
-        // $conn = mysqli_connect('den1.mysql2.gear.host','simrsst','Ca80ec!~R32L','simrsst');
+        // $conn = mysqli_connect('localhost','root','root','simrsst');
+        $conn = mysqli_connect('den1.mysql2.gear.host','simrsst','Ca80ec!~R32L','simrsst');
         return $conn;
     }
 
@@ -146,6 +146,12 @@
         $antrian = mysqli_query($conn, $antrian);
         $antrian = mysqli_fetch_assoc($antrian);
         $antrian = $antrian['no_antrian'];
+
+
+        $query  = "SELECT NamaPasien FROM t_pasien WHERE NomorRM = $norm";
+                $result = mysqli_query($conn, $query);
+                $data   = mysqli_fetch_assoc($result);
+                $nama   =  $data['NamaPasien'];
         if (isset($antrian)) {
             // echo $antrian;
 
@@ -165,12 +171,18 @@
 
                 $t_antrian = "INSERT INTO `t_antrian`(`id_ruang`, `NomorRM`, `no_antrian`, `tanggal`) 
                               VALUES ('$kode_ruang','$norm','$antrian','$tgl_daftar')";
-                $res       = mysqli_query($t_antrian);
+                $res1       = mysqli_query($conn, $t_antrian);
                 
                 //insert to daftar pasien
                 $sql   = "INSERT INTO `t_pendaftaran`(`NomorRM`, `KodeCaraPembayaran`, `TglDaftar`, `TglPeriksa`, `NoKartu`, `Kunjungan`, `KodeRuang`, `KodeDokter`, `Keluhan`) 
                           VALUES ('$norm','$kdcarapem','$tgl_daftar','$tgl_periksa','$nokartu','$kunjungan','$kode_ruang','$kode_dokter','$keluhan')";
                 $res   = mysqli_query($conn, $sql);
+                
+                if (isset($res) && isset($res1)) {
+                    echo json_encode(array('alert' => "Pasien $nama Berhasil Disimpan"));
+                }else {
+                    echo json_encode(array('alert' => 'Form Belum Lengkap'));
+                }
 
             }else{
                 $kunjungan = 1;
@@ -179,11 +191,16 @@
 
                 $t_antrian = "INSERT INTO `t_antrian`(`id_ruang`, `NomorRM`, `no_antrian`, `tanggal`) 
                               VALUES ('$kode_ruang','$norm','$antrian','$tgl_daftar')";
-                $res       = mysqli_query($t_antrian);
-                
+                $res1       = mysqli_query($conn, $t_antrian);
+
                 $sql   = "INSERT INTO `t_pendaftaran`(`NomorRM`, `KodeCaraPembayaran`, `TglDaftar`, `TglPeriksa`, `NoKartu`, `Kunjungan`, `KodeRuang`, `KodeDokter`, `Keluhan`) 
                           VALUES ('$norm','$kdcarapem','$tgl_daftar','$tgl_periksa','$nokartu','$kunjungan','$kode_ruang','$kode_dokter','$keluhan')";
                 $res   = mysqli_query($conn, $sql);
+                if (isset($res) && isset($res1)) {
+                    echo json_encode(array('alert' => "Pasien $nama Berhasil Disimpan"));
+                }else {
+                    echo json_encode(array('alert' => 'Form Belum Lengkap'));
+                }
             }
             
         }else{
@@ -200,12 +217,17 @@
 
                 $t_antrian = "INSERT INTO `t_antrian`(`id_ruang`, `NomorRM`, `no_antrian`, `tanggal`) 
                               VALUES ('$kode_ruang','$norm','$antrian','$tgl_daftar')";
-                              echo $t_antrian;
+                $res1       = mysqli_query($conn, $t_antrian);
                 
                 //insert to daftar pasien
                 $sql   = "INSERT INTO `t_pendaftaran`(`NomorRM`, `KodeCaraPembayaran`, `TglDaftar`, `TglPeriksa`, `NoKartu`, `Kunjungan`, `KodeRuang`, `KodeDokter`, `Keluhan`) 
                           VALUES ('$norm','$kdcarapem','$tgl_daftar','$tgl_periksa','$nokartu','$kunjungan','$kode_ruang','$kode_dokter','$keluhan')";
                 $res   = mysqli_query($conn, $sql);
+                if (isset($res) && isset($res1)) {
+                    echo json_encode(array('alert' => "Pasien $nama Berhasil Disimpan"));
+                }else {
+                    echo json_encode(array('alert' => 'Form Belum Lengkap'));
+                }
 
             }else{
                 $kunjungan = 1;
@@ -214,26 +236,28 @@
 
                 $t_antrian = "INSERT INTO `t_antrian`(`id_ruang`, `NomorRM`, `no_antrian`, `tanggal`) 
                               VALUES ('$kode_ruang','$norm','$antrian','$tgl_daftar')";
-                              echo $t_antrian;
+                $res1       = mysqli_query($conn, $t_antrian);
+
                 $sql   = "INSERT INTO `t_pendaftaran`(`NomorRM`, `KodeCaraPembayaran`, `TglDaftar`, `TglPeriksa`, `NoKartu`, `Kunjungan`, `KodeRuang`, `KodeDokter`, `Keluhan`) 
                           VALUES ('$norm','$kdcarapem','$tgl_daftar','$tgl_periksa','$nokartu','$kunjungan','$kode_ruang','$kode_dokter','$keluhan')";
                 $res   = mysqli_query($conn, $sql);
+
+                if (isset($res) && isset($res1)) {
+                    echo json_encode(array('alert' => "Pasien $nama Berhasil Disimpan"));
+                }else {
+                    echo json_encode(array('alert' => 'Form Belum Lengkap'));
+                }
             }
             
 
            
         }
         
-        // $query  = "SELECT NamaPasien FROM t_pasien WHERE NomorRM = $norm";
-        // $result = mysqli_query($conn, $query);
-        // $data   = mysqli_fetch_assoc($result);
-        // $nama   =  $data['NamaPasien'];
+  
 
         // if ($res ==  true) {
         //    echo json_encode(array('alert' => "Pasien $nama Berhasil Disimpan"));
-        // }else {
-        //     echo json_encode(array('alert' => 'Form Belum Lengkap'));
-        // }
+        
     }
 
     function DaftarPoliklinik()
