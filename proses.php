@@ -3,8 +3,8 @@
     function Connection()
     {
         static $conn;
-        // $conn = mysqli_connect('localhost','root','root','simrsst');
-        $conn = mysqli_connect('den1.mysql2.gear.host','simrsst','Ca80ec!~R32L','simrsst');
+        $conn = mysqli_connect('localhost','root','root','simrsst');
+        // $conn = mysqli_connect('den1.mysql2.gear.host','simrsst','Ca80ec!~R32L','simrsst');
         return $conn;
     }
 
@@ -133,17 +133,97 @@
         echo json_encode($jsonArray);
     }
 
-    function SimpanDaftar($norm,$kdcarapem,$tgl_daftar,$tgl_periksa,$nokartu,$kunjungan,$kode_ruang,$kode_dokter,$keluhan)
+    function SimpanDaftar($norm,$kdcarapem,$tgl_daftar,$tgl_periksa,$nokartu,$kode_ruang,$kode_dokter,$keluhan)
     {
         $conn   = Connection();
         $ruang  = "SELECT Inisial FROM t_ruang WHERE KodeRuang = $kode_ruang";
         $ruang  = mysqli_query($conn, $ruang);
         $ruang  = mysqli_fetch_assoc($ruang);
         $ruang  = $ruang['Inisial'];
-        $antrian = "SELECT no_antrian FROM t_pendaftaran";
-        // $sql    = "INSERT INTO `t_pendaftaran`(`NomorRM`, `KodeCaraPembayaran`, `TglDaftar`, `TglPeriksa`, `NoKartu`, `Kunjungan`, `KodeRuang`, `KodeDokter`, `Keluhan`) 
-        //            VALUES ('$norm','$kdcarapem','$tgl_daftar','$tgl_periksa','$nokartu','$kunjungan','$kode_ruang','$kode_dokter','$keluhan')";
-        // $res    = mysqli_query($conn, $sql);
+
+        $antrian = "SELECT no_antrian FROM t_antrian WHERE no_antrian LIKE '%$ruang%' ORDER BY no_antrian DESC LIMIT 1";
+
+        $antrian = mysqli_query($conn, $antrian);
+        $antrian = mysqli_fetch_assoc($antrian);
+        $antrian = $antrian['no_antrian'];
+        if (isset($antrian)) {
+            // echo $antrian;
+
+            preg_match_all('([0-9]+|[a-zA-Z]+)', "$antrian", $match);
+            $antrian = $match[0][1];
+            $antrian = $antrian+1;
+            $antrian = $ruang . $antrian;
+            
+            $kunjungan = "SELECT Kunjungan FROM t_pendaftaran WHERE NomorRM = $norm ORDER BY Kunjungan DESC LIMIT 1";
+            $kunjungan = mysqli_query($conn, $kunjungan);
+            $kunjungan = mysqli_fetch_assoc($kunjungan);
+            $kunjungan = $kunjungan['Kunjungan'];
+            if (isset($kunjungan)) {
+                $kunjungan = $kunjungan+1;
+                //insert to tabel antrian
+                $tgl_daftar = substr($tgl_daftar, 0, 10);
+
+                $t_antrian = "INSERT INTO `t_antrian`(`id_ruang`, `NomorRM`, `no_antrian`, `tanggal`) 
+                              VALUES ('$kode_ruang','$norm','$antrian','$tgl_daftar')";
+                $res       = mysqli_query($t_antrian);
+                
+                //insert to daftar pasien
+                $sql   = "INSERT INTO `t_pendaftaran`(`NomorRM`, `KodeCaraPembayaran`, `TglDaftar`, `TglPeriksa`, `NoKartu`, `Kunjungan`, `KodeRuang`, `KodeDokter`, `Keluhan`) 
+                          VALUES ('$norm','$kdcarapem','$tgl_daftar','$tgl_periksa','$nokartu','$kunjungan','$kode_ruang','$kode_dokter','$keluhan')";
+                $res   = mysqli_query($conn, $sql);
+
+            }else{
+                $kunjungan = 1;
+
+                $tgl_daftar = substr($tgl_daftar, 0, 10);
+
+                $t_antrian = "INSERT INTO `t_antrian`(`id_ruang`, `NomorRM`, `no_antrian`, `tanggal`) 
+                              VALUES ('$kode_ruang','$norm','$antrian','$tgl_daftar')";
+                $res       = mysqli_query($t_antrian);
+                
+                $sql   = "INSERT INTO `t_pendaftaran`(`NomorRM`, `KodeCaraPembayaran`, `TglDaftar`, `TglPeriksa`, `NoKartu`, `Kunjungan`, `KodeRuang`, `KodeDokter`, `Keluhan`) 
+                          VALUES ('$norm','$kdcarapem','$tgl_daftar','$tgl_periksa','$nokartu','$kunjungan','$kode_ruang','$kode_dokter','$keluhan')";
+                $res   = mysqli_query($conn, $sql);
+            }
+            
+        }else{
+            $antrian = "$ruang" . 1;
+
+            $kunjungan = "SELECT Kunjungan FROM t_pendaftaran WHERE NomorRM = $norm ORDER BY Kunjungan DESC LIMIT 1";
+            $kunjungan = mysqli_query($conn, $kunjungan);
+            $kunjungan = mysqli_fetch_assoc($kunjungan);
+            $kunjungan = $kunjungan['Kunjungan'];
+            if (isset($kunjungan)) { 
+                $kunjungan = $kunjungan+1;
+                //insert to tabel antrian
+                $tgl_daftar = substr($tgl_daftar, 0, 10);
+
+                $t_antrian = "INSERT INTO `t_antrian`(`id_ruang`, `NomorRM`, `no_antrian`, `tanggal`) 
+                              VALUES ('$kode_ruang','$norm','$antrian','$tgl_daftar')";
+                              echo $t_antrian;
+                
+                //insert to daftar pasien
+                $sql   = "INSERT INTO `t_pendaftaran`(`NomorRM`, `KodeCaraPembayaran`, `TglDaftar`, `TglPeriksa`, `NoKartu`, `Kunjungan`, `KodeRuang`, `KodeDokter`, `Keluhan`) 
+                          VALUES ('$norm','$kdcarapem','$tgl_daftar','$tgl_periksa','$nokartu','$kunjungan','$kode_ruang','$kode_dokter','$keluhan')";
+                $res   = mysqli_query($conn, $sql);
+
+            }else{
+                $kunjungan = 1;
+
+                $tgl_daftar = substr($tgl_daftar, 0, 10);
+
+                $t_antrian = "INSERT INTO `t_antrian`(`id_ruang`, `NomorRM`, `no_antrian`, `tanggal`) 
+                              VALUES ('$kode_ruang','$norm','$antrian','$tgl_daftar')";
+                              echo $t_antrian;
+                $sql   = "INSERT INTO `t_pendaftaran`(`NomorRM`, `KodeCaraPembayaran`, `TglDaftar`, `TglPeriksa`, `NoKartu`, `Kunjungan`, `KodeRuang`, `KodeDokter`, `Keluhan`) 
+                          VALUES ('$norm','$kdcarapem','$tgl_daftar','$tgl_periksa','$nokartu','$kunjungan','$kode_ruang','$kode_dokter','$keluhan')";
+                $res   = mysqli_query($conn, $sql);
+            }
+            
+
+           
+        }
+        
         // $query  = "SELECT NamaPasien FROM t_pasien WHERE NomorRM = $norm";
         // $result = mysqli_query($conn, $query);
         // $data   = mysqli_fetch_assoc($result);

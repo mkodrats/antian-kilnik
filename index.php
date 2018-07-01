@@ -45,7 +45,7 @@ include 'proses.php';
         $kode_ruang     = $_GET['kode_ruang'];
         $kode_dokter    = $_GET['kode_dokter'];
         $keluhan        = $_GET['keluhan'];
-        SimpanDaftar($norm,$kdcarapem,$tgl_daftar,$tgl_periksa,$nokartu,$kunjungan,$kode_ruang,$kode_dokter,$keluhan);
+        SimpanDaftar($norm,$kdcarapem,$tgl_daftar,$tgl_periksa,$nokartu,$kode_ruang,$kode_dokter,$keluhan);
     }
 
     if (isset($_GET['poli'])) {
